@@ -1,0 +1,319 @@
+/* Google Fonts のインポート：Noto Sans JP と M PLUS Rounded 1c */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&family=M+PLUS+Rounded+1c:wght@400;700&display=swap');
+
+/* ライトテーマ用CSS変数（デフォルト） */
+:root {
+  --bg-color: #f0f4f8;
+  --text-color: #2d3748;
+  --primary-color: #4a5568;
+  --secondary-color: #718096;
+  --accent-color: #48bb78; /* 緑（自分のターン用） */
+  --opponent-color: #e53e3e; /* 赤（相手のターン用） */
+  --board-color: #2d3748;
+  --cell-color: #4a5568;
+  --card-bg: #f7fafc;
+  --black-piece: #1a202c;
+  --white-piece: #f7fafc;
+}
+
+/* ダークテーマ用 */
+.dark {
+  --bg-color: #1a1a1a;
+  --text-color: #eaeaea;
+  --primary-color: #4a5568;
+  --secondary-color: #bbbbbb;
+  --accent-color: #48bb78;
+  --opponent-color: #e53e3e;
+  --board-color: #333333;
+  --cell-color: #555555;
+  --card-bg: #2d2d2d;
+}
+
+/* トグルスイッチ用スタイル */
+.theme-toggle, .ai-toggle {
+  position: fixed;
+  right: 20px;
+  z-index: 2000;
+}
+.theme-toggle {
+  top: 20px;
+}
+.ai-toggle {
+  top: 60px;
+}
+.theme-toggle label, .ai-toggle label {
+  display: inline-block;
+  cursor: pointer;
+}
+.theme-toggle input, .ai-toggle input {
+  display: none;
+}
+.slider {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  background-color: #ccc;
+  border-radius: 34px;
+  transition: background-color 0.4s;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.4s;
+}
+input:checked + .slider {
+  background-color: #2196F3;
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 30px;
+  color: var(--primary-color);
+}
+
+#lobby {
+  background: var(--card-bg);
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#lobby h2 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+#lobby ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+#lobby li {
+  padding: 10px;
+  background: var(--bg-color);
+  margin-bottom: 5px;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s;
+}
+
+#lobby li:hover {
+  background: var(--secondary-color);
+  color: var(--card-bg);
+}
+
+/* ロビー補助テキスト */
+#matchStatus {
+  margin-top: 20px;
+  font-size: 1.1em;
+  color: #48bb78;
+  font-weight: 600;
+}
+
+/* マッチングボタン */
+#autoMatchBtn {
+  padding: 10px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 5px;
+  transition: background 0.3s, color 0.3s;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+#autoMatchBtn:hover {
+  background: var(--secondary-color);
+  color: var(--card-bg);
+}
+
+/* ゲーム盤コンテナ */
+#gameContainer {
+  position: relative;
+  margin: 20px auto;
+  padding: 10px;
+  border-radius: 15px;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  border: 4px solid transparent;
+}
+#gameContainer.your-turn {
+  border-color: var(--accent-color);
+}
+#gameContainer.opponent-turn {
+  border-color: var(--opponent-color);
+}
+
+#game {
+  display: grid;
+  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 50px);
+  gap: 2px;
+  background: var(--board-color);
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  display: none;
+  transition: background-color 0.3s;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: var(--cell-color);
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.valid-move {
+  background-color: var(--accent-color);
+  opacity: 0.5;
+}
+.valid-move-opponent {
+  background-color: var(--opponent-color);
+  opacity: 0.5;
+}
+
+.piece {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.black {
+  background: var(--black-piece);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.white {
+  background: var(--white-piece);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.cell:hover .piece {
+  transform: scale(1.05);
+}
+
+button {
+  background: var(--primary-color);
+  color: var(--white-piece);
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s, transform 0.1s;
+  margin-top: 15px;
+}
+
+button:hover {
+  background: var(--secondary-color);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+#reset {
+  background: var(--accent-color);
+  display: none;
+}
+
+#reset:hover {
+  background: #38a169;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 10px;
+  }
+  h1 {
+    font-size: 2em;
+  }
+  #lobby {
+    padding: 20px;
+  }
+  #game {
+    gap: 1px;
+    grid-template-columns: repeat(8, 40px);
+    grid-template-rows: repeat(8, 40px);
+  }
+  .cell {
+    width: 40px;
+    height: 40px;
+  }
+  .piece {
+    width: 32px;
+    height: 32px;
+    top: 4px;
+    left: 4px;
+  }
+}
+
+#gameResult {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  padding: 20px;
+  border-radius: 10px;
+  font-size: 1.5em;
+  display: none;
+  z-index: 1000;
+  animation: fadeIn 0.5s ease-out;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes subtle-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(74, 85, 104, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(74, 85, 104, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 85, 104, 0); }
+}
+
+.your-turn {
+  animation: subtle-pulse 2s infinite;
+}

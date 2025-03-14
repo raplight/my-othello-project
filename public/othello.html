@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>オセロゲーム</title>
+  <!-- Google Fonts と外部CSSを読み込み -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ライト/ダークテーマ切替用トグルスイッチ -->
+  <div class="theme-toggle">
+    <label>
+      <input type="checkbox" id="themeToggle">
+      <span class="slider"></span> テーマ切替
+    </label>
+  </div>
+
+  <!-- オートモード切替用トグルスイッチ -->
+  <div class="ai-toggle">
+    <label>
+      <input type="checkbox" id="aiToggle">
+      <span class="slider"></span> オートモード
+    </label>
+  </div>
+
+  <h1>オセロゲーム</h1>
+
+  <!-- ロビー表示部 -->
+  <div id="lobby">
+    <h2>ロビー</h2>
+    <div id="lobbyList">待機中のプレイヤー:</div>
+    <ul id="lobbyPlayers"></ul>
+    <!-- マッチングボタン押下でサーバへ matchRequest を送信 -->
+    <button id="autoMatchBtn">マッチング</button>
+    <div id="matchStatus"></div>
+  </div>
+
+  <!-- ゲーム盤とその他表示 -->
+  <div id="gameContainer">
+    <div id="game"></div>
+  </div>
+  <div id="status"></div>
+  <button id="reset">リセット</button>
+
+  <!-- ゲーム終了時の結果表示 -->
+  <div id="gameResult"></div>
+
+  <!-- 外部JavaScriptの読み込み -->
+  <script src="script.js"></script>
+</body>
+</html>
